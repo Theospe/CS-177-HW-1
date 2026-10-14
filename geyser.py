@@ -95,18 +95,8 @@ def find_cdf_input(x, q):
         The value such that Fx(val) = q
 
     '''
-    if len(x) == 0:
-        raise ValueError ("x must not be empty")
-    if not 0 <= q <= 1:
-        raise ValueError ("q must be between 0 and 1")
-
-    sorted_x = np.sort(x)
-
-    if q == 0:
-        return sorted_x[0]
-
-    index = int(np.ceil(q * len(sorted_x))) - 1
-    return sorted_x[index]
+    val = np.quantile(x, q, method = 'inverted_cdf')
+    return val
 
 print('\nPart b')
 print('Fs=0.25:', find_cdf_input(S, 0.25), '\t', end=' ')
@@ -142,16 +132,27 @@ def compute_joint_and_marginal(S, T, threshX=3.5, threshY=70):
     p_y :
         A numpy array of length 2 for the marginal p(y)
     '''
-    p_xy = None
-    p_x = None
-    p_y = None
+
+    n = S.shape[0]
+
+    X = (S > threshX).astype(int)
+    Y = (T > threshY).astype(int)
+
+    p_xy = np.zeros((2,2))
+
+    for x in (0,1):
+        for y in (0,1):
+            p_xy[x,y] = np.sum((X == x) & (Y ==y)) / n
+
+    p_x = np.sum(p_xy, axis = 1)
+    p_y = np.sum(p_xy, axis = 0)
     return p_xy, p_x, p_y
 
-# p_xy, p_x, p_y = compute_joint_and_marginal(S, T)
-# print('\nPart c')
-# print('Joint probability of X and Y: p(x,y)')
-# print(p_xy)
-# print('Marginal probability of X: p(x)')
-# print(p_x)
-# print('Marginal probability of Y: p(y)')
-# print(p_y)
+p_xy, p_x, p_y = compute_joint_and_marginal(S, T)
+print('\nPart c')
+print('Joint probability of X and Y: p(x,y)')
+print(p_xy)
+print('Marginal probability of X: p(x)')
+print(p_x)
+print('Marginal probability of Y: p(y)')
+print(p_y)

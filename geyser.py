@@ -44,10 +44,10 @@ n = S.shape[0]                # number of observations
 
 # Plot data. This is provided to help you visualize,
 # and does not need to be included in your submission.
-plt.plot(S, T, 'ok')
-plt.xlabel('Eruption Time (minutes)')
-plt.ylabel('Waiting Time to Next Eruption (minutes)')
-plt.show()
+# plt.plot(S, T, 'ok')
+# plt.xlabel('Eruption Time (minutes)')
+# plt.ylabel('Waiting Time to Next Eruption (minutes)')
+# plt.show()
 
 # Compute mean under empirical distribution
 meanS = np.sum(S)/n
@@ -68,7 +68,8 @@ def compute_variance(x):
         The empirical variance of X
     '''
 
-    var = np.var(x)
+    n = x.shape[0]
+    var = np.sum(x**2)/ n - (np.sum(x)/n)**2
 
     return var
 
@@ -95,6 +96,7 @@ def find_cdf_input(x, q):
         The value such that Fx(val) = q
 
     '''
+
     val = np.quantile(x, q, method = 'inverted_cdf')
     return val
 
